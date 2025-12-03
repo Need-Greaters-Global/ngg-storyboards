@@ -3,8 +3,5 @@
   "framework": null,
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/$1" }
-  ],
-  "env": {
-    "DATABASE_URL": "@ngg-storyboards-database-url"
-  }
+  ]
 }
