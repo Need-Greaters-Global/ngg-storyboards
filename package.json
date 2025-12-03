@@ -1,0 +1,12 @@
+{
+  "name": "ngg-storyboards",
+  "version": "1.0.0",
+  "description": "Interactive storyboards for video production with embedded audio",
+  "scripts": {
+    "dev": "vercel dev",
+    "deploy": "vercel --prod"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^0.9.0"
+  }
+}

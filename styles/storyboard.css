@@ -288,6 +288,214 @@ footer .brand {
   }
 }
 
+/* ========================================
+   COMMENTING SYSTEM STYLES
+   ======================================== */
+
+/* Comment Section Container */
+.comment-section {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #e9ecef;
+}
+
+/* Comment Toggle Button */
+.comment-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: var(--light-gray);
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: var(--text-dark);
+  transition: all 0.2s ease;
+}
+
+.comment-toggle:hover {
+  background: #e9ecef;
+}
+
+.comment-icon {
+  font-size: 1.1rem;
+}
+
+.comment-count {
+  color: var(--primary-cyan);
+  font-weight: 600;
+}
+
+/* Comment Form */
+.comment-form {
+  margin-top: 12px;
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: var(--border-radius);
+}
+
+.comment-input,
+.comment-textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  margin-bottom: 10px;
+  transition: border-color 0.2s ease;
+}
+
+.comment-input:focus,
+.comment-textarea:focus {
+  outline: none;
+  border-color: var(--primary-cyan);
+}
+
+.comment-textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.comment-submit {
+  padding: 10px 20px;
+  background: var(--dark-navy);
+  color: var(--white);
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.comment-submit:hover {
+  background: var(--darker-navy);
+}
+
+/* Comments List */
+.comments-list {
+  margin-top: 16px;
+}
+
+.comment {
+  background: var(--white);
+  border: 1px solid #e9ecef;
+  border-radius: var(--border-radius);
+  padding: 14px;
+  margin-bottom: 10px;
+}
+
+.comment.resolved {
+  opacity: 0.7;
+  border-left: 3px solid #10b981;
+}
+
+.comment-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.comment-date {
+  font-size: 0.8rem;
+  color: var(--text-light);
+}
+
+.comment-badge {
+  font-size: 0.7rem;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.comment-badge.resolved {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.comment-body {
+  color: var(--text-dark);
+  line-height: 1.5;
+}
+
+.team-response {
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: #e0f2fe;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: #0369a1;
+}
+
+/* General Comment Section */
+.general-comment-section {
+  background: var(--white);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  padding: 24px;
+  margin: 30px auto;
+  max-width: 900px;
+}
+
+.general-comment-section h2 {
+  margin: 0 0 8px 0;
+  color: var(--dark-navy);
+}
+
+.general-comment-section > p {
+  color: var(--text-light);
+  margin: 0 0 16px 0;
+}
+
+/* ========================================
+   MEDIA EMBEDDING STYLES
+   ======================================== */
+
+/* Scene Image/Video */
+.scene-media {
+  margin: 16px 0;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+}
+
+.scene-media img,
+.scene-media video {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.scene-media.placeholder {
+  background: linear-gradient(135deg, #dee2e6 0%, #ced4da 100%);
+  border: 2px dashed #adb5bd;
+  padding: 60px 20px;
+  text-align: center;
+  color: var(--text-light);
+}
+
+.scene-media.placeholder .placeholder-icon {
+  font-size: 3rem;
+  margin-bottom: 12px;
+  opacity: 0.5;
+}
+
+.scene-media.placeholder .placeholder-text {
+  font-size: 0.9rem;
+}
+
+/* Media Caption */
+.media-caption {
+  padding: 8px 12px;
+  background: #f8f9fa;
+  font-size: 0.85rem;
+  color: var(--text-light);
+  font-style: italic;
+}
+
 /* Print Styles */
 @media print {
   body {
@@ -308,5 +516,10 @@ footer .brand {
     content: "[Audio available in online version]";
     font-style: italic;
     color: #666;
+  }
+
+  .comment-section,
+  .general-comment-section {
+    display: none;
   }
 }
