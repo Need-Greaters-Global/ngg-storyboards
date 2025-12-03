@@ -4,12 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NGG Interactive Storyboards</title>
+  <link rel="stylesheet" href="styles/storyboard.css">
   <style>
     :root {
       --primary: #013A81;
       --accent: #E5AF2B;
       --text: #1a1a2e;
       --bg: #f8f9fa;
+      --dark-navy: #013A81;
+      --darker-navy: #02113C;
+      --primary-gold: #E5AF2B;
+      --primary-cyan: #0E9DE3;
+      --white: #ffffff;
+      --text-light: #6b7280;
     }
     * { box-sizing: border-box; }
     body {
@@ -106,5 +113,18 @@
       <p>Need Greaters Global</p>
     </footer>
   </div>
+
+  <!-- Password Protection -->
+  <script src="scripts/password-gate.js"></script>
+  <script>
+    // Team password for landing page
+    // Change this password as needed
+    PasswordGate.init({
+      password: 'ngg2024',
+      pageId: 'landing',
+      title: 'NGG Storyboards',
+      subtitle: 'Enter team password to view all projects'
+    });
+  </script>
 </body>
 </html>
