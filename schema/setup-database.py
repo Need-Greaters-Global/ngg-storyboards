@@ -7,8 +7,18 @@ Run this script to create the comments tables in the existing Neon database.
 import psycopg2
 import os
 
-# Neon database connection string
-DATABASE_URL = "postgresql://neondb_owner:npg_v9Q2FHAzJSof@ep-morning-dawn-a4ct3x1k-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require"
+# The connection string is read from the environment, never from this file.
+# Set it first, for example in PowerShell:  $env:DATABASE_URL = "<value from Vercel or Neon>"
+# or pull it with:  vercel env pull .env.local  (and load it into your shell).
+def get_database_url():
+    """Return DATABASE_URL from the environment, or stop with a clear message."""
+    url = os.environ.get("DATABASE_URL", "").strip()
+    if not url:
+        raise SystemExit(
+            "DATABASE_URL is not set. Export the Neon connection string as the "
+            "DATABASE_URL environment variable and run this script again."
+        )
+    return url
 
 def setup_database():
     """Create the storyboard comments tables"""
@@ -19,7 +29,7 @@ def setup_database():
         schema_sql = f.read()
 
     # Connect and execute
-    conn = psycopg2.connect(DATABASE_URL)
+    conn = psycopg2.connect(get_database_url())
     conn.autocommit = True
     cursor = conn.cursor()
 
