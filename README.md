@@ -68,6 +68,17 @@ The script will:
 
 Simply open any HTML file in a browser - no build step required.
 
+Run the API security tests with `npm install` then `npm test`.
+
+## Configuration (environment variables only)
+
+No credential is stored in this repository, and this repository is public, so never commit one. The API functions and the setup script read everything from environment variables and refuse to run without them:
+
+| Variable | Used by | Notes |
+|----------|---------|-------|
+| `DATABASE_URL` | `api/comments.js`, `api/admin/comments.js`, `schema/setup-database.py` | Neon connection string. Set it in Vercel as a sensitive variable; export it in your shell before running the setup script. |
+| `ADMIN_KEY` | `api/admin/comments.js` | At least 32 random characters. If it is missing or shorter, the admin API answers 503 for every request. Send it in the `X-Admin-Key` header. |
+
 ---
 
 *Need Greaters Global*

@@ -1,16 +1,28 @@
 import { neon } from '@neondatabase/serverless';
 
-const sql = neon(process.env.DATABASE_URL);
+// Length limits match the column sizes in schema/comments.sql.
+const MAX_SLUG = 100;
+const MAX_NAME = 255;
+const MAX_EMAIL = 255;
+const MAX_COMMENT = 5000;
 
+function textOk(value, max, required) {
+  if (value === undefined || value === null || value === '') return !required;
+  return typeof value === 'string' && value.length <= max;
+}
+
+// Comments are read and written only by the storyboard pages on this site
+// (same origin), so no CORS headers are sent.
 export default async function handler(req, res) {
-  // Enable CORS
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
   if (req.method === 'OPTIONS') {
-    return res.status(200).end();
+    return res.status(204).end();
   }
+
+  if (!process.env.DATABASE_URL) {
+    console.error('Comments API: DATABASE_URL is not set');
+    return res.status(503).json({ error: 'Database is not configured' });
+  }
+  const sql = neon(process.env.DATABASE_URL);
 
   try {
     if (req.method === 'GET') {
@@ -47,12 +59,24 @@ export default async function handler(req, res) {
 
     } else if (req.method === 'POST') {
       // Add a new comment
-      const { client, project, scene, author_name, author_email, comment_text } = req.body;
+      const { client, project, scene, author_name, author_email, comment_text } = req.body || {};
 
       if (!client || !project || !author_name || !comment_text) {
         return res.status(400).json({
           error: 'client, project, author_name, and comment_text are required'
         });
+      }
+      if (
+        !textOk(client, MAX_SLUG, true) ||
+        !textOk(project, MAX_SLUG, true) ||
+        !textOk(author_name, MAX_NAME, true) ||
+        !textOk(author_email, MAX_EMAIL, false) ||
+        !textOk(comment_text, MAX_COMMENT, true)
+      ) {
+        return res.status(400).json({ error: 'One or more fields are too long or not text' });
+      }
+      if (scene !== undefined && scene !== null && scene !== '' && !Number.isInteger(Number(scene))) {
+        return res.status(400).json({ error: 'scene must be a whole number' });
       }
 
       const result = await sql`

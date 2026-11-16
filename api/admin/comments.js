@@ -1,25 +1,29 @@
 import { neon } from '@neondatabase/serverless';
+import { checkAdminKey } from '../_lib/admin-auth.js';
 
-const sql = neon(process.env.DATABASE_URL);
+const ALLOWED_STATUSES = ['pending', 'reviewed', 'resolved', 'archived'];
+const MAX_TEAM_RESPONSE = 5000;
 
-// Simple admin password check (Vercel Pro password protection handles main auth)
-const ADMIN_KEY = process.env.ADMIN_KEY || 'ngg-admin-2024';
-
+// The admin API is called only from the team's own tools (same origin or a
+// server-side script), so it sends no CORS headers. Browsers on other sites
+// cannot read its responses or send the X-Admin-Key header to it.
 export default async function handler(req, res) {
-  // Enable CORS
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, PATCH, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Admin-Key');
-
   if (req.method === 'OPTIONS') {
-    return res.status(200).end();
+    return res.status(204).end();
   }
 
-  // Check admin key
-  const adminKey = req.headers['x-admin-key'];
-  if (adminKey !== ADMIN_KEY) {
-    return res.status(401).json({ error: 'Unauthorized' });
+  // Fail closed: there is no built-in key. ADMIN_KEY must be set in the
+  // environment (at least 32 characters), or every request is refused.
+  const auth = checkAdminKey(req.headers['x-admin-key'], process.env.ADMIN_KEY);
+  if (!auth.ok) {
+    return res.status(auth.status).json({ error: auth.error });
   }
+
+  if (!process.env.DATABASE_URL) {
+    console.error('Admin comments API: DATABASE_URL is not set');
+    return res.status(503).json({ error: 'Database is not configured' });
+  }
+  const sql = neon(process.env.DATABASE_URL);
 
   try {
     if (req.method === 'GET') {
@@ -53,10 +57,16 @@ export default async function handler(req, res) {
 
     } else if (req.method === 'PATCH') {
       // Update comment status or add team response
-      const { id, status, team_response } = req.body;
+      const { id, status, team_response } = req.body || {};
 
       if (!id) {
         return res.status(400).json({ error: 'Comment ID is required' });
+      }
+      if (status && !ALLOWED_STATUSES.includes(status)) {
+        return res.status(400).json({ error: `status must be one of: ${ALLOWED_STATUSES.join(', ')}` });
+      }
+      if (team_response && (typeof team_response !== 'string' || team_response.length > MAX_TEAM_RESPONSE)) {
+        return res.status(400).json({ error: `team_response must be text of at most ${MAX_TEAM_RESPONSE} characters` });
       }
 
       let result;
